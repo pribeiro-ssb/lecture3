@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="data:;base64,=">
+		<title>IaaC_DM Assignment03_V2 - Pedro</title>
+		<style>
+
+            h1 {text-align: center;}
+            p {text-align: center;}
+            
+                 
+			body { 
+                margin: 0;
+                font-family: sans-serif;
+            }
+
+            input { width: 80%; }
+
+			/* CSS for a spinning animation */ 
+			#loader {
+                border: 5px solid #f3f3f3; /* Light grey */
+                border-top: 5px solid #3d3d3d; /* Grey */
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                animation: spin 1s linear infinite;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+
+		</style>
+	</head>
+	<body>
+        <p> CUSTOMIZE YOUR TOWER! </p>
+        <dl>
+
+        <div id="loader"></div>
+        <div>
+            <input type="range" id="height" name="height" min="3" max="4.5" value="3.5" step="0.5">
+            <label for="height">Floor height</label>
+        </div>
+        <div>
+            <input type="range" id="count" name="count" min="5" max="25" value="15" step="1">
+            <label for="count">Number of Floors</label>
+        </div>
+        <div>
+            <input type="range" id="rotation" name="rotation" min="0" max="90" value="45" step="5">
+            <label for="rotation">Rotation</label>
+        </div>
+        <button id="downloadButton" disabled>Download</button>
+        <script type="module" src="./script.js"></script>
+	</body>
+</html>
