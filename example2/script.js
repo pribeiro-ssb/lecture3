@@ -5,13 +5,16 @@ import rhino3dm from 'https://cdn.jsdelivr.net/npm/rhino3dm@0.15.0-beta/rhino3dm
 import { RhinoCompute } from 'https://cdn.jsdelivr.net/npm/compute-rhino3d@0.13.0-beta/compute.rhino3d.module.js'
 
 // reference the definition
-const definitionName = 'rnd_node.gh'
+const definitionName = 'GH_tower.gh'
 
 // listen for slider change events
+const height_slider = document.getElementById( 'height' )
+height_slider.addEventListener( 'mouseup', onSliderChange, false )
+const rotation_slider = document.getElementById( 'rotation' )
+rotation_slider.addEventListener( 'mouseup', onSliderChange, false )
 const count_slider = document.getElementById( 'count' )
-count_slider.addEventListener( 'input', onSliderChange, false )
-const radius_slider = document.getElementById( 'radius' )
-radius_slider.addEventListener( 'input', onSliderChange, false )
+count_slider.addEventListener( 'mouseup', onSliderChange, false )
+
 
 const downloadButton = document.getElementById("downloadButton")
 downloadButton.onclick = download
@@ -49,19 +52,23 @@ async function compute() {
     // collect data
 
     // get slider values
+    let height = document.getElementById('height').valueAsNumber
     let count = document.getElementById('count').valueAsNumber
-    let radius = document.getElementById('radius').valueAsNumber
+    let rotation = document.getElementById('rotation').valueAsNumber
 
     // format data
-    let param1 = new RhinoCompute.Grasshopper.DataTree('RH_IN:radius')
-    param1.append([0], [radius])
+    let param1 = new RhinoCompute.Grasshopper.DataTree('RH_IN:height')
+    param1.append([0], [height])
     let param2 = new RhinoCompute.Grasshopper.DataTree('RH_IN:count')
     param2.append([0], [count])
+    let param3 = new RhinoCompute.Grasshopper.DataTree('RH_IN:rotation')
+    param3.append([0], [rotation])
 
     // Add all params to an array
     let trees = []
     trees.push(param1)
     trees.push(param2)
+    trees.push(param3)
 
     // Call RhinoCompute
 
@@ -144,7 +151,7 @@ function getApiKey() {
 // download button handler
 function download () {
     let buffer = doc.toByteArray()
-    saveByteArray("node.3dm", buffer)
+    saveByteArray("Pedro_Tower.3dm", buffer)
 }
 
 function saveByteArray ( fileName, byte ) {
@@ -161,12 +168,17 @@ let scene, camera, renderer
 
 function init() {
 
+    // Rhino models are z-up, so set this as the default
+    THREE.Object3D.DefaultUp = new THREE.Vector3( 0, 0, 1 )
+
     // create a scene and a camera
     scene = new THREE.Scene()
     scene.background = new THREE.Color(1, 1, 1)
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-    camera.position.z = - 30
+    camera.position.z = 50
+    camera.position.y = - 200
 
+    
     // create the renderer and add it to the html
     renderer = new THREE.WebGLRenderer({ antialias: true })
     renderer.setSize(window.innerWidth, window.innerHeight)
@@ -177,12 +189,12 @@ function init() {
 
     // add a directional light
     const directionalLight = new THREE.DirectionalLight( 0xffffff )
-    directionalLight.intensity = 2
+    directionalLight.intensity = 1
     scene.add( directionalLight )
 
     const ambientLight = new THREE.AmbientLight()
+    ambientLight.intensity = 1
     scene.add( ambientLight )
-
 }
 
 // function to continuously render the scene
