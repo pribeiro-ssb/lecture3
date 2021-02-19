@@ -22,7 +22,7 @@ downloadButton.onclick = download
 
 // set up loader for converting the results to threejs
 const loader = new Rhino3dmLoader()
-loader.setLibraryPath( 'https://cdn.jsdelivr.net/npm/rhino3dm@0.15.0-beta/' )
+loader.setLibraryPath( 'https://cdn.jsdelivr.net/npm/rhino3dm@0.13.0/' )
 
 // create a few variables to store a reference to the rhino3dm library and to the loaded definition
 let rhino, definition, doc
@@ -87,12 +87,27 @@ function collectResults(values) {
     if( doc !== undefined)
         doc.delete()
 
-     //clear objects from scene
+        console.log(scene)
+        //clear objects from scene
+        for (let i = 0; i < scene.children.length; i++) {
+            let child = scene.children[i]
+            if (!child.isLight) {
+               if (child.userData.hasOwnProperty( 'static' ) && !child.userData.static ) {
+                   scene.remove(child)
+               }
+            }
+        }
+
+/*
     scene.traverse(child => {
-        if (!child.isLight) {
+        if (child !== undefined)
+        if (!child.isLight) 
+            if{child.userData.hasOwnProperty ( 'static' ) && !child.userData.Static ) {
+
             scene.remove(child)
         }
     })
+*/
 
     console.log(values)
     doc = new rhino.File3dm()
@@ -114,13 +129,14 @@ function collectResults(values) {
     const buffer = new Uint8Array(doc.toByteArray()).buffer
     loader.parse( buffer, function ( object ) 
     {
+        object.userData.static = false
         scene.add( object )
         // hide spinner
         document.getElementById('loader').style.display = 'none'
-
         // enable download button
         downloadButton.disabled = false
     })
+
 
 
 }
@@ -207,11 +223,10 @@ function init() {
     //LOAD THE CONTEXT - NOT WORKING :(
 
     loader.load( model, function ( object ) {
-        object.userdata.static = true
+
         //uncomment to hide spinner when model loads
         //document.getElementById('loader').remove()
         scene.add( object )
-
     } )
 }
 
